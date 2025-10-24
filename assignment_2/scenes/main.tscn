@@ -1,0 +1,90 @@
+[gd_scene load_steps=16 format=3 uid="uid://bxrd8q6jckgu6"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_622u5"]
+[ext_resource type="Script" path="res://scripts/PointingController.gd" id="2_d7r1o"]
+[ext_resource type="PackedScene" uid="uid://cnwp7ndjr4s8y" path="res://Quest2Controllers/OculusQuest2TouchController_Left.gltf" id="3_w5tr0"]
+[ext_resource type="Script" path="res://scripts/LineRenderer.gd" id="5_15vqn"]
+[ext_resource type="PackedScene" uid="uid://bc8lh0rihgxvi" path="res://Quest2Controllers/OculusQuest2TouchController_Right.gltf" id="6_ec17w"]
+[ext_resource type="Script" path="res://scripts/CubeSpawner.gd" id="7_mb8i5"]
+[ext_resource type="PackedScene" uid="uid://bmfb2uak6c012" path="res://scenes/LeftCube.tscn" id="8_8gfry"]
+[ext_resource type="PackedScene" uid="uid://dhh1auqobytyq" path="res://scenes/RightCube.tscn" id="9_om80w"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5btje"]
+size = Vector3(0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d8tdu"]
+transparency = 1
+albedo_color = Color(1, 0, 0, 0.737255)
+
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_gyq66"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s63yk"]
+transparency = 1
+albedo_color = Color(0, 1, 0, 0.619608)
+
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_mgb45"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_s6yio"]
+
+[sub_resource type="Environment" id="Environment_ac7hl"]
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_622u5")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="." groups=["xr_origin"]]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="LeftHand" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, -0.5)
+tracker = &"left_hand"
+script = ExtResource("2_d7r1o")
+
+[node name="Area3D" type="Area3D" parent="XROrigin3D/LeftHand"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/LeftHand/Area3D"]
+shape = SubResource("BoxShape3D_5btje")
+
+[node name="OculusQuest2TouchController_Left" parent="XROrigin3D/LeftHand" instance=ExtResource("3_w5tr0")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="LineRenderer" type="MeshInstance3D" parent="XROrigin3D/LeftHand"]
+material_override = SubResource("StandardMaterial3D_d8tdu")
+mesh = SubResource("ImmediateMesh_gyq66")
+script = ExtResource("5_15vqn")
+
+[node name="RightHand" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
+tracker = &"right_hand"
+script = ExtResource("2_d7r1o")
+
+[node name="LineRenderer" type="MeshInstance3D" parent="XROrigin3D/RightHand"]
+material_override = SubResource("StandardMaterial3D_s63yk")
+mesh = SubResource("ImmediateMesh_mgb45")
+script = ExtResource("5_15vqn")
+
+[node name="Area3D" type="Area3D" parent="XROrigin3D/RightHand"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/RightHand/Area3D"]
+shape = SubResource("BoxShape3D_s6yio")
+
+[node name="OculusQuest2TouchController_Right" parent="XROrigin3D/RightHand" instance=ExtResource("6_ec17w")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ac7hl")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.97188)
+
+[node name="CubeSpawner" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.58084)
+script = ExtResource("7_mb8i5")
+left_cube_scene = ExtResource("8_8gfry")
+right_cube_scene = ExtResource("9_om80w")
+
+[connection signal="button_pressed" from="XROrigin3D/LeftHand" to="XROrigin3D/LeftHand" method="_on_button_pressed"]
+[connection signal="button_pressed" from="XROrigin3D/RightHand" to="XROrigin3D/RightHand" method="_on_button_pressed"]
+[connection signal="button_released" from="XROrigin3D/RightHand" to="XROrigin3D/RightHand" method="_on_button_released"]
+[connection signal="pose_centered" from="XROrigin3D/RightHand" to="." method="_on_right_hand_pose_centered"]

@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://dglagyxi7cy8w"]
+
+[ext_resource type="Script" path="res://scripts/BoxScript.gd" id="1_3q3c4"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_r8lig"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wvr71"]
+
+[node name="LeftCube" type="Node3D"]
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+script = ExtResource("1_3q3c4")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
+mesh = SubResource("BoxMesh_r8lig")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("BoxShape3D_wvr71")

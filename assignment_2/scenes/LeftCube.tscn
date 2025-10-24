@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://bmfb2uak6c012"]
+
+[ext_resource type="Script" path="res://scripts/BoxScript.gd" id="1_6g8ku"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jyyce"]
+transparency = 1
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_r8lig"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wvr71"]
+
+[node name="LeftCube" type="Node3D"]
+script = ExtResource("1_6g8ku")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" groups=["cubes"]]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_jyyce")
+mesh = SubResource("BoxMesh_r8lig")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("BoxShape3D_wvr71")
