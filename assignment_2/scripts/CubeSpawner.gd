@@ -2,11 +2,7 @@ extends Node3D
 
 @export var left_cube_scene: PackedScene  # Red cube scene
 @export var right_cube_scene: PackedScene  # Green cube scene
-@export var spawn_distance = 12.0  # How far away cubes spawn
-@export var spawn_range_x = 2.0  # Horizontal range (-x to +x)
-@export var spawn_range_y_min = 0.3  # Minimum height
-@export var spawn_range_y_max = 2.0  # Maximum height
-
+@onready var xr_camera = $XROrigin3D/XRCamera3D  
 # Color definitions
 const COLOR_LEFT = Color(1.0, 0.0, 0.0)  # Red for left hand
 const COLOR_RIGHT = Color(0.0, 1.0, 0.0)  # Green for right hand
@@ -61,7 +57,7 @@ func _process(delta):
 		print("Spawning cube at timer: ", spawn_timer)
 		spawn_cube()
 		spawn_timer = 0.0
-		next_spawn_time = 2.0
+		next_spawn_time = 3.0
 		print("Next spawn in: ", next_spawn_time, " seconds")
 
 func spawn_cube():
@@ -85,23 +81,20 @@ func spawn_cube():
 	print("Cube type: ", cube.get_class())
 	print("Cube has script: ", cube.get_script() != null)
 	
-
-		# Player's position
-	var player_pos = xr_origin.global_position
-
-	# Random spawn position in a sphere around the player
-	var random_angle = randf() * TAU  # Random angle (can be behind player)
-	var random_distance = randf_range(15.0,20.0)  # Spawn 2-4 meters away
-	var random_height_offset = randf_range(1.0, 1.5)  # Within 1 meter above/below player
+	# Fixed spawn area in world space (adjust these coordinates as needed)
+	# This creates a spawn zone at a fixed location
+	var spawn_center = Vector3(0, 1.0, -15)  
 	
-	var random_x = player_pos.x + cos(random_angle) * random_distance
-	var random_y = player_pos.y + random_height_offset
-	var random_z = player_pos.z + sin(random_angle) * random_distance
+	# Random offset within arm's reach area
+	var horizontal_offset = randf_range(-0.6, 0.6)  # Left/right within 60cm
+	var vertical_offset = randf_range(-0.3, 0.5)  # Vertical spread
+	var depth_offset = randf_range(-0.3, 0.3)  # Slight depth variation
+	
 	# Calculate spawn position
-	var spawn_pos = Vector3(
-		random_x,
-		random_y,
-		random_z
+	var spawn_pos = spawn_center + Vector3(
+		horizontal_offset,
+		vertical_offset,
+		depth_offset
 	)
 	
 	print("Spawn position: ", spawn_pos)
@@ -111,17 +104,18 @@ func spawn_cube():
 	
 	# Wait one frame for the cube to be fully ready
 	await get_tree().process_frame
-	print("set color: " ,cube.has_method("set_cube_color"))
+	print("set color: ", cube.has_method("set_cube_color"))
 	print("Has set_target: ", cube.has_method("set_target"))
-	# Set cube's color to player position
+	
+	# Set cube's color
 	if cube.has_method("set_cube_color"):
 		cube.set_cube_color(cube_color)
 		print("Set cube color: ", cube_color)
 		
-	# Set cube's target to player position
+	# Set cube's target to player position (at spawn height)
 	if cube.has_method("set_target"):
 		var target = xr_origin.global_position
-		target.y = random_y  # Keep same height
+		target.y = spawn_pos.y  # Keep same height as spawn
 		cube.set_target(target)
 		print("Set cube target: ", target)
 	else:

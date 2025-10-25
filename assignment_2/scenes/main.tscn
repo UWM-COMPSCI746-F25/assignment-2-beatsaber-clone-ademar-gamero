@@ -1,11 +1,11 @@
 [gd_scene load_steps=16 format=3 uid="uid://bxrd8q6jckgu6"]
 
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_622u5"]
-[ext_resource type="Script" path="res://scripts/PointingController.gd" id="2_d7r1o"]
+[ext_resource type="Script" uid="uid://cva5m1wtqrtpq" path="res://scripts/main.gd" id="1_622u5"]
+[ext_resource type="Script" uid="uid://7qehc757ady6" path="res://scripts/PointingController.gd" id="2_d7r1o"]
 [ext_resource type="PackedScene" uid="uid://cnwp7ndjr4s8y" path="res://Quest2Controllers/OculusQuest2TouchController_Left.gltf" id="3_w5tr0"]
-[ext_resource type="Script" path="res://scripts/LineRenderer.gd" id="5_15vqn"]
+[ext_resource type="Script" uid="uid://c1xsgvo8wf3g2" path="res://scripts/LineRenderer.gd" id="5_15vqn"]
 [ext_resource type="PackedScene" uid="uid://bc8lh0rihgxvi" path="res://Quest2Controllers/OculusQuest2TouchController_Right.gltf" id="6_ec17w"]
-[ext_resource type="Script" path="res://scripts/CubeSpawner.gd" id="7_mb8i5"]
+[ext_resource type="Script" uid="uid://c5jgmnjddmjp1" path="res://scripts/CubeSpawner.gd" id="7_mb8i5"]
 [ext_resource type="PackedScene" uid="uid://bmfb2uak6c012" path="res://scenes/LeftCube.tscn" id="8_8gfry"]
 [ext_resource type="PackedScene" uid="uid://dhh1auqobytyq" path="res://scenes/RightCube.tscn" id="9_om80w"]
 
@@ -85,6 +85,7 @@ left_cube_scene = ExtResource("8_8gfry")
 right_cube_scene = ExtResource("9_om80w")
 
 [connection signal="button_pressed" from="XROrigin3D/LeftHand" to="XROrigin3D/LeftHand" method="_on_button_pressed"]
+[connection signal="pose_centered" from="XROrigin3D/LeftHand" to="XROrigin3D/LeftHand" method="_on_pose_centered"]
 [connection signal="button_pressed" from="XROrigin3D/RightHand" to="XROrigin3D/RightHand" method="_on_button_pressed"]
 [connection signal="button_released" from="XROrigin3D/RightHand" to="XROrigin3D/RightHand" method="_on_button_released"]
-[connection signal="pose_centered" from="XROrigin3D/RightHand" to="." method="_on_right_hand_pose_centered"]
+[connection signal="pose_centered" from="XROrigin3D/RightHand" to="XROrigin3D/RightHand" method="_on_pose_centered"]

@@ -27,8 +27,6 @@ func _ready():
 		sword_color = COLOR_RIGHT
 		print("Right controller detected - Green sword")
 
-	
-	
 	# Find the XR origin
 	xr_origin = get_tree().get_first_node_in_group("xr_origin")
 	if not xr_origin:
@@ -53,7 +51,8 @@ func _process(delta):
 	if occulus_button_hold:
 		occulus_button_time += delta
 		if occulus_button_time >= required_hold_time:
-			emit_signal("pose_centered")
+			print("centering")
+			pose_centered.emit()
 			occulus_button_hold = false
 	
 func _physics_process(delta):
@@ -110,3 +109,7 @@ func _on_button_released(name):
 	if name == "menu_button":
 		occulus_button_hold = false
 		occulus_button_time = 0.0
+
+func _on_pose_centered() -> void:
+	print("centering hmd")
+	XRServer.center_on_hmd(0, true)
